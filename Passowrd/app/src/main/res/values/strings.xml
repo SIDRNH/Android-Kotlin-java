@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Password Manager</string>
+    <string name="title_name">Password Manager</string>
+    <string name="title_activity_authentication">Authentication</string>
+    <string name="home_screen_background_image">Home Screen Background Image</string>
+    <string name="auth_login">Login</string>
+    <string name="auth_signup">Sign Up</string>
+    <string name="create_account">Create Now</string>
+    <string name="dont_have_an_account">Don\'t Have an Account?</string>
+    <string name="already_have_an_account">Already Have an Account?</string>
+    <string name="loading">Loading...</string>
+    <string name="logged_in_successfully">Logged in Successfully</string>
+    <string name="invalid_credentials">Invalid Credentials</string>
+    <string name="title_activity_dummy">Dummy</string>
+</resources>

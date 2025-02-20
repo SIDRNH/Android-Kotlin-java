@@ -53,7 +53,7 @@ class HomeScreenViewModel(private val weatherRepository: WeatherRepository): Vie
         }
     }
 
-    fun getData(location: String) {
+    private fun getData(location: String) {
         _state.update {
             it.copy(
                 currentWeather = NetworkResponse.Loading
@@ -96,7 +96,7 @@ class HomeScreenViewModel(private val weatherRepository: WeatherRepository): Vie
         }
     }
 
-    fun searchQuery(location: String) {
+    private fun searchQuery(location: String) {
         if (location.length < 3) {
             _state.update {
                 it.copy(

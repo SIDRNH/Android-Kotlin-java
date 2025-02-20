@@ -1,0 +1,10 @@
+ # Ignore unnecessary Android files
+*.iml
+.idea/
+.gradle/
+*.keystore
+local.properties
+*/build/
+*.apk
+*.aab
+.DS_Store

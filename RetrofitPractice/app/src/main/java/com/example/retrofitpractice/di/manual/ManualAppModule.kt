@@ -1,10 +1,10 @@
 package com.example.retrofitpractice.di.manual
 
 import androidx.lifecycle.ViewModelProvider
-import com.example.retrofitpractice.data.remote.RetrofitInstance
-import com.example.retrofitpractice.data.remote.api.WeatherApi
-import com.example.retrofitpractice.domain.WeatherRepository
-import com.example.retrofitpractice.presentation.homescreen.HomeScreenViewModel
+import com.example.retrofitpractice.homescreen.data.remote.RetrofitInstance
+import com.example.retrofitpractice.homescreen.data.remote.api.WeatherApi
+import com.example.retrofitpractice.homescreen.domain.WeatherRepository
+import com.example.retrofitpractice.homescreen.presentation.HomeScreenViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 interface ManualAppModule {
@@ -16,6 +16,12 @@ interface ManualAppModule {
 
 class ManualAppModuleImpl: ManualAppModule {
 
+    //Authentication
+    override val firebaseAuth: FirebaseAuth by lazy {
+        FirebaseAuth.getInstance();
+    }
+
+    //Home Screen
     override val weatherApi: WeatherApi by lazy {
         RetrofitInstance.weatherApi;
     }
@@ -27,8 +33,4 @@ class ManualAppModuleImpl: ManualAppModule {
         get() = viewModelFactory {
             HomeScreenViewModel(weatherRepository = weatherRepository);
         }
-
-    override val firebaseAuth: FirebaseAuth by lazy {
-        FirebaseAuth.getInstance();
-    }
 }

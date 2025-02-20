@@ -1,6 +1,6 @@
-package com.example.retrofitpractice.data.remote
+package com.example.retrofitpractice.homescreen.data.remote
 
-import com.example.retrofitpractice.data.remote.api.WeatherApi
+import com.example.retrofitpractice.homescreen.data.remote.api.WeatherApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

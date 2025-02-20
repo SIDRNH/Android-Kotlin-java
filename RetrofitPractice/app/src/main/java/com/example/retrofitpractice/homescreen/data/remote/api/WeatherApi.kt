@@ -1,7 +1,7 @@
-package com.example.retrofitpractice.data.remote.api
+package com.example.retrofitpractice.homescreen.data.remote.api
 
-import com.example.retrofitpractice.data.remote.model.CurrentWeatherResponse
-import com.example.retrofitpractice.data.remote.model.SearchResponse
+import com.example.retrofitpractice.homescreen.data.remote.model.CurrentWeatherResponse
+import com.example.retrofitpractice.homescreen.data.remote.model.SearchResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

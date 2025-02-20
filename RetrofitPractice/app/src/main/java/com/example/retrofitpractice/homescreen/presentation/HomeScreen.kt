@@ -1,4 +1,4 @@
-package com.example.retrofitpractice.presentation.homescreen
+package com.example.retrofitpractice.homescreen.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -49,7 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.retrofitpractice.R
-import com.example.retrofitpractice.data.remote.model.CurrentWeatherResponse
+import com.example.retrofitpractice.homescreen.data.remote.model.CurrentWeatherResponse
 import com.example.retrofitpractice.utils.NetworkResponse
 
 @Composable

@@ -1,11 +1,11 @@
-package com.example.retrofitpractice.presentation.homescreen
+package com.example.retrofitpractice.homescreen.presentation
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.retrofitpractice.data.remote.model.CurrentWeatherResponse
-import com.example.retrofitpractice.data.remote.model.SearchResponse
-import com.example.retrofitpractice.domain.WeatherRepository
+import com.example.retrofitpractice.homescreen.data.remote.model.CurrentWeatherResponse
+import com.example.retrofitpractice.homescreen.data.remote.model.SearchResponse
+import com.example.retrofitpractice.homescreen.domain.WeatherRepository
 import com.example.retrofitpractice.utils.NetworkResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

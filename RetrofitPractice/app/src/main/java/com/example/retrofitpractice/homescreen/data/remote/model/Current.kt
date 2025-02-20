@@ -1,4 +1,4 @@
-package com.example.retrofitpractice.data.remote.model
+package com.example.retrofitpractice.homescreen.data.remote.model
 
 data class Current(
     val cloud: Int,

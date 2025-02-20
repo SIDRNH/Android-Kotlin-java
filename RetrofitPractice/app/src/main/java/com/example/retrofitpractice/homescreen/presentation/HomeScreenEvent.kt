@@ -1,4 +1,4 @@
-package com.example.retrofitpractice.presentation.homescreen
+package com.example.retrofitpractice.homescreen.presentation
 
 sealed interface HomeScreenEvent {
     data class SearchedValue(val search: String): HomeScreenEvent;

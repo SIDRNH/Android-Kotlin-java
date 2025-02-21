@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -18,6 +19,8 @@ import com.example.retrofitpractice.homescreen.presentation.HomeScreen
 import com.example.retrofitpractice.homescreen.presentation.HomeScreenState
 import com.example.retrofitpractice.homescreen.presentation.HomeScreenViewModel
 import com.example.retrofitpractice.ui.theme.RetrofitPracticeTheme
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -28,7 +31,8 @@ object HomeScreen;
 
 @Composable
 fun Navigation() {
-    val navController = rememberNavController();
+    val navController: NavHostController = rememberNavController();
+    val user: FirebaseUser? = FirebaseAuth.getInstance().currentUser;
 
     RetrofitPracticeTheme {
         Scaffold(
@@ -37,7 +41,7 @@ fun Navigation() {
             NavHost(
                 navController = navController,
                 modifier = Modifier.padding(innerPadding),
-                startDestination = UserLogin
+                startDestination = if (user == null) UserLogin else HomeScreen
             ) {
                 composable<UserLogin> {
                     val authViewModel: AuthViewModel = viewModel<AuthViewModel>(

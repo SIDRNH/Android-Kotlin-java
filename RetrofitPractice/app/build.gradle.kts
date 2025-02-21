@@ -8,6 +8,9 @@ plugins {
 
     // Add the Google services Gradle plugin
     id("com.google.gms.google-services")
+
+    //Kotlin Serializable Plugin
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 android {
@@ -23,7 +26,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val properties: Properties = Properties();
+        val properties = Properties();
         properties.load(project.rootProject.file("local.properties").inputStream());
 
         buildConfigField("String", "API_KEY", "\"${properties.getProperty("API_KEY")}\"")
@@ -61,6 +64,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -68,6 +72,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Kotlin Serializable
+    implementation(libs.kotlinx.serialization.json)
 
     //ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.compose)

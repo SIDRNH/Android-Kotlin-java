@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class AuthViewModel(private val auth: FirebaseAuth): ViewModel() {
 
@@ -13,8 +14,25 @@ class AuthViewModel(private val auth: FirebaseAuth): ViewModel() {
 
     fun onEvent(event: AuthenticationEvent) {
         when(event) {
+            AuthenticationEvent.CCDClicked -> {
+                _state.update {
+                    it.copy(
+                        isCCDExpanded = true
+                    );
+                }
+            }
 
-            else -> {}
+            is AuthenticationEvent.SendOtp -> {
+
+            }
+
+            is AuthenticationEvent.PhoneNumber -> {
+                _state.update {
+                    it.copy(
+                        phoneNumber = event.phoneNumber
+                    );
+                }
+            }
         }
     }
 }

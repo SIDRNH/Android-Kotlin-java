@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import java.util.concurrent.TimeUnit
 
+private const val VALID_OTP_CODE = "1414";
+
 class AuthViewModel(private val auth: FirebaseAuth): ViewModel() {
 
     private val _state = MutableStateFlow(AuthenticationState());
@@ -33,7 +35,12 @@ class AuthViewModel(private val auth: FirebaseAuth): ViewModel() {
             }
 
             is AuthenticationEvent.SendOtp -> {
-
+                sendOtp(event.activity, phoneNumber);
+                _state.update {
+                    it.copy(
+                        sentOtp = true
+                    );
+                }
             }
 
             is AuthenticationEvent.PhoneNumber -> {
@@ -42,6 +49,28 @@ class AuthViewModel(private val auth: FirebaseAuth): ViewModel() {
                         phoneNumber = event.phoneNumber
                     );
                 }
+            }
+
+            is AuthenticationEvent.OnChangeFieldFocused -> {
+                _state.update { it.copy(
+                    focusedIndex = event.index
+                ) }
+            }
+            is AuthenticationEvent.OnEnterNumber -> {
+                enterNumber(event.number, event.index)
+            }
+            AuthenticationEvent.OnKeyboardBack -> {
+                val previousIndex = getPreviousFocusedIndex(state.value.focusedIndex)
+                _state.update { it.copy(
+                    code = it.code.mapIndexed { index, number ->
+                        if(index == previousIndex) {
+                            null
+                        } else {
+                            number
+                        }
+                    },
+                    focusedIndex = previousIndex
+                ) }
             }
         }
     }
@@ -111,11 +140,74 @@ class AuthViewModel(private val auth: FirebaseAuth): ViewModel() {
             // The SMS verification code has been sent to the provided phone number, we
             // now need to ask the user to enter the code and then construct a credential
             // by combining the code with a verification ID.
-            Log.d("Code Sent", "onCodeSent:$verificationId")
+            Log.d("Code Sent", "onCodeSent:$verificationId");
 
             // Save verification ID and resending token so we can use them later
             //storedVerificationId = verificationId
             //resendToken = token
         }
+    }
+
+
+    private fun enterNumber(number: Int?, index: Int) {
+        val newCode = state.value.code.mapIndexed { currentIndex, currentNumber ->
+            if(currentIndex == index) {
+                number
+            } else {
+                currentNumber
+            }
+        }
+        val wasNumberRemoved = number == null
+        _state.update { it.copy(
+            code = newCode,
+            focusedIndex = if(wasNumberRemoved || it.code.getOrNull(index) != null) {
+                it.focusedIndex
+            } else {
+                getNextFocusedTextFieldIndex(
+                    currentCode = it.code,
+                    currentFocusedIndex = it.focusedIndex
+                )
+            },
+            isValid = if(newCode.none { it == null }) {
+                newCode.joinToString("") == VALID_OTP_CODE
+            } else null
+        ) }
+    }
+
+    private fun getPreviousFocusedIndex(currentIndex: Int?): Int? {
+        return currentIndex?.minus(1)?.coerceAtLeast(0)
+    }
+
+    private fun getNextFocusedTextFieldIndex(
+        currentCode: List<Int?>,
+        currentFocusedIndex: Int?
+    ): Int? {
+        if(currentFocusedIndex == null) {
+            return null
+        }
+
+        if(currentFocusedIndex == 3) {
+            return currentFocusedIndex
+        }
+
+        return getFirstEmptyFieldIndexAfterFocusedIndex(
+            code = currentCode,
+            currentFocusedIndex = currentFocusedIndex
+        )
+    }
+
+    private fun getFirstEmptyFieldIndexAfterFocusedIndex(
+        code: List<Int?>,
+        currentFocusedIndex: Int
+    ): Int {
+        code.forEachIndexed { index, number ->
+            if(index <= currentFocusedIndex) {
+                return@forEachIndexed
+            }
+            if(number == null) {
+                return index
+            }
+        }
+        return currentFocusedIndex
     }
 }

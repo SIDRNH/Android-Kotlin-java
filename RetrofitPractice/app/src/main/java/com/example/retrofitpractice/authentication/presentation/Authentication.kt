@@ -1,5 +1,6 @@
 package com.example.retrofitpractice.authentication.presentation
 
+import android.app.Activity
 import android.content.res.Configuration
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -26,6 +27,7 @@ import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -38,6 +40,8 @@ import com.example.retrofitpractice.authentication.presentation.model.Country
 fun UserAuthentication(state: AuthenticationState, onEvent: (AuthenticationEvent) -> Unit) {
     val focusRequester: FocusRequester = remember { FocusRequester() };
     val focusManager: FocusManager = LocalFocusManager.current;
+    val context = LocalContext.current;
+    val activity = context as? Activity;
 
     Scaffold {innerPadding ->
         Box(
@@ -78,7 +82,7 @@ fun UserAuthentication(state: AuthenticationState, onEvent: (AuthenticationEvent
                         onDone = {
                             if (state.phoneNumber.trim().isNotBlank()) {
                                 focusManager.clearFocus();
-                                //Event
+                                onEvent(AuthenticationEvent.SendOtp(activity!!, state.phoneNumber));
                             }
                         }
                     )
@@ -90,7 +94,7 @@ fun UserAuthentication(state: AuthenticationState, onEvent: (AuthenticationEvent
                     enabled = state.phoneNumber.trim().isNotBlank(),
                     onClick = {
                         focusManager.clearFocus();
-                        //Event
+                        onEvent(AuthenticationEvent.SendOtp(activity!!, state.phoneNumber));
                     },
                     content = { Text("Send Otp")}
                 )

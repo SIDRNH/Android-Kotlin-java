@@ -12,5 +12,11 @@ data class AuthenticationState(
     val country: String = "",
     val countryCode: String = "",
     val countryIso: String ="",
-    val isCCDExpanded: Boolean = false
+    val isCCDExpanded: Boolean = false,
+    val otp: String = "",
+    val otpDialog: Boolean = false,
+    val sentOtp: Boolean = false,
+    val code: List<Int?> = (1..4).map { null },
+    val focusedIndex: Int? = null,
+    val isValid: Boolean? = null
 )

@@ -1,5 +1,8 @@
 package com.example.retrofitpractice.authentication.presentation
 
+import com.example.retrofitpractice.authentication.presentation.model.Country
+import com.example.retrofitpractice.authentication.presentation.model.countries
+
 data class AuthenticationState(
     val providerId: String = "",
     val uid: String = "",
@@ -14,9 +17,10 @@ data class AuthenticationState(
     val countryIso: String ="",
     val isCCDExpanded: Boolean = false,
     val otp: String = "",
-    val otpDialog: Boolean = false,
     val sentOtp: Boolean = false,
-    val code: List<Int?> = (1..4).map { null },
-    val focusedIndex: Int? = null,
-    val isValid: Boolean? = null
+    val selectedOption: Country = countries.find { it.code == "IN" } ?: countries.first(),
+    val limit: Int = countries.find { it.code == selectedOption.code }?.limit ?: countries.first().limit,
+    val verificationId: String = "",
+    val isLoading: Boolean = false,
+    val loggedIn: Boolean = false
 )

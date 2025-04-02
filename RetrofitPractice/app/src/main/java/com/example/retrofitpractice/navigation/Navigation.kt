@@ -49,7 +49,7 @@ fun Navigation() {
                     );
                     val state: AuthenticationState = authViewModel.state.collectAsState().value;
 
-                    UserAuthentication(state = state, onEvent = authViewModel::onEvent)
+                    UserAuthentication(state = state, onEvent = authViewModel::onEvent, navController = navController)
                 }
 
                 composable<HomeScreen> {

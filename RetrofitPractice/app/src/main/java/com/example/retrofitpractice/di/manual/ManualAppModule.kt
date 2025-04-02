@@ -40,6 +40,6 @@ class ManualAppModuleImpl: ManualAppModule {
 
     override val homeScreenViewModelFactory: ViewModelProvider.Factory
         get() = viewModelFactory {
-            HomeScreenViewModel(weatherRepository = weatherRepository);
+            HomeScreenViewModel(weatherRepository = weatherRepository, auth = firebaseAuth);
         }
 }

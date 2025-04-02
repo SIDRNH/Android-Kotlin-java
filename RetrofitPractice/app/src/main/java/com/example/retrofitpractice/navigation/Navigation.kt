@@ -57,7 +57,7 @@ fun Navigation() {
                         factory = ManualApplication.appModule.homeScreenViewModelFactory
                     );
                     val state: HomeScreenState = homeScreenViewModel.state.collectAsState().value;
-                    HomeScreen(state = state, onEvent = homeScreenViewModel::onEvent);
+                    HomeScreen(state = state, onEvent = homeScreenViewModel::onEvent, navController = navController);
                 }
             }
         }

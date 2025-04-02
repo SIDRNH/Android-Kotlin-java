@@ -7,15 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -26,14 +23,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,119 +48,144 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.retrofitpractice.R
 import com.example.retrofitpractice.homescreen.data.remote.model.CurrentWeatherResponse
+import com.example.retrofitpractice.navigation.UserLogin
 import com.example.retrofitpractice.utils.NetworkResponse
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(state: HomeScreenState, onEvent: (HomeScreenEvent) -> Unit) {
+fun HomeScreen(state: HomeScreenState, onEvent: (HomeScreenEvent) -> Unit, navController: NavController) {
     val focusRequester: FocusRequester = remember { FocusRequester() };
     val focusManager: FocusManager = LocalFocusManager.current;
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding() + 8.dp,
-                bottom = 8.dp,
-                start = 8.dp,
-                end = 8.dp
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(focusRequester),
-            value = state.search,
-            onValueChange = {onEvent(HomeScreenEvent.SearchedValue(it))},
-            placeholder = { Text(stringResource(R.string.search)) },
-            trailingIcon = {
-                if(state.enableClearSearch) {
-                    IconButton(onClick = {onEvent(HomeScreenEvent.ClearSearch)}) {
-                        Icon(imageVector = Icons.Default.Clear, contentDescription = stringResource(R.string.clear_search));
-                    };
-                }else {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Home") },
+                actions = {
                     IconButton(
-                        onClick = {
-                            focusManager.clearFocus();
-                            onEvent(HomeScreenEvent.Search(state.search));
-                        },
-                        enabled = state.search.trim().isNotBlank()
-                    ) {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = stringResource(R.string.search));
-                    };
-                }
-            },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    if (state.search.trim().isNotBlank()) {
-                        focusManager.clearFocus()
-                        onEvent(HomeScreenEvent.Search(state.search))
-                    }
+                        onClick = { onEvent(HomeScreenEvent.signOut) },
+                        content = {
+                            Icon(imageVector = Icons.Default.Lock, contentDescription = "Sign Out");
+                        }
+                    )
                 }
             )
-        );
-        if (state.searchResult.isNotEmpty()) {
-            LazyColumn(
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = 8.dp,
+                    top = innerPadding.calculateTopPadding() + 8.dp,
+                    end = 8.dp,
+                    bottom = 8.dp
+                ),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White)
-                    .heightIn(max = 250.dp)
-            ) {
-                items(state.searchResult) {
-                    Text(
+                    .focusRequester(focusRequester),
+                value = state.search,
+                onValueChange = {onEvent(HomeScreenEvent.SearchedValue(it))},
+                placeholder = { Text(stringResource(R.string.search)) },
+                trailingIcon = {
+                    if(state.enableClearSearch) {
+                        IconButton(onClick = {onEvent(HomeScreenEvent.ClearSearch)}) {
+                            Icon(imageVector = Icons.Default.Clear, contentDescription = stringResource(R.string.clear_search));
+                        };
+                    }else {
+                        IconButton(
+                            onClick = {
+                                focusManager.clearFocus();
+                                onEvent(HomeScreenEvent.Search(state.search));
+                            },
+                            enabled = state.search.trim().isNotBlank()
+                        ) {
+                            Icon(imageVector = Icons.Default.Search, contentDescription = stringResource(R.string.search));
+                        };
+                    }
+                },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        if (state.search.trim().isNotBlank()) {
+                            focusManager.clearFocus()
+                            onEvent(HomeScreenEvent.Search(state.search))
+                        }
+                    }
+                )
+            );
+            if (state.searchResult.isNotEmpty()) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = Color.White)
+                        .heightIn(max = 250.dp)
+                ) {
+                    items(state.searchResult) {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable(
+                                    onClick = {
+                                        focusManager.clearFocus();
+                                        onEvent(HomeScreenEvent.Search(it.name));
+                                    }
+                                ),
+                            text = "${it.name}, ${it.country}",
+                            color = Color.Black
+                        )
+                    }
+                }
+            }
+            when(val result = state.currentWeather) {
+                is NetworkResponse.Error -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                        content = { Text(text = result.message); }
+                    );
+                }
+                NetworkResponse.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                        content = { CircularProgressIndicator(); }
+                    );
+                }
+                is NetworkResponse.Success -> {
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable(
-                                onClick = {
-                                    focusManager.clearFocus();
-                                    onEvent(HomeScreenEvent.Search(it.name));
-                                }
-                            ),
-                        text = "${it.name}, ${it.country}",
-                        color = Color.Black
-                    )
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        content = { WeatherDetails(data = result.data); }
+                    );
+                }
+                NetworkResponse.Idle -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                        content = { Text(text = "No Data"); }
+                    );
                 }
             }
         }
-        when(val result = state.currentWeather) {
-            is NetworkResponse.Error -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                    content = { Text(text = result.message); }
-                );
-            }
-            NetworkResponse.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                    content = { CircularProgressIndicator(); }
-                );
-            }
-            is NetworkResponse.Success -> {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    content = { WeatherDetails(data = result.data); }
-                );
-            }
-            NetworkResponse.Idle -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                    content = { Text(text = "No Data"); }
-                );
+    }
+    LaunchedEffect(state.loggedOut) {
+        if (state.loggedOut) {
+            navController.navigate(UserLogin) {
+                popUpTo(0)
             }
         }
     }
@@ -252,8 +279,8 @@ fun WeatherKeyVal(key : String, value : String) {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun PreviewHomeScreen() {
-    HomeScreen(state = HomeScreenState(), onEvent = {});
-}
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun PreviewHomeScreen() {
+//    HomeScreen(state = HomeScreenState(), onEvent = {});
+//}

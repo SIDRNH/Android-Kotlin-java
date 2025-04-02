@@ -7,6 +7,7 @@ import com.example.retrofitpractice.homescreen.data.remote.model.CurrentWeatherR
 import com.example.retrofitpractice.homescreen.data.remote.model.SearchResponse
 import com.example.retrofitpractice.homescreen.domain.WeatherRepository
 import com.example.retrofitpractice.utils.NetworkResponse
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,7 +16,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Response
 
-class HomeScreenViewModel(private val weatherRepository: WeatherRepository): ViewModel() {
+class HomeScreenViewModel(private val weatherRepository: WeatherRepository, private val auth: FirebaseAuth): ViewModel() {
     private val _state = MutableStateFlow(HomeScreenState());
     val state: StateFlow<HomeScreenState> = _state.asStateFlow();
 
@@ -50,6 +51,14 @@ class HomeScreenViewModel(private val weatherRepository: WeatherRepository): Vie
                     );
                 }
             }
+            HomeScreenEvent.signOut -> {
+                auth.signOut();
+                _state.update {
+                    it.copy(
+                        loggedOut = true
+                    )
+                }
+            }
         }
     }
 
@@ -77,6 +86,7 @@ class HomeScreenViewModel(private val weatherRepository: WeatherRepository): Vie
                     val errorMessage = try {
                         JSONObject(errorBody ?: "").getJSONObject("error").getString("message")
                     } catch (e: Exception) {
+                        Log.e("Exception", "$e")
                         "Something went wrong"
                     }
                     _state.update {
@@ -118,9 +128,10 @@ class HomeScreenViewModel(private val weatherRepository: WeatherRepository): Vie
                     }
                 } else {
                     val errorBody = result.errorBody()?.string() ?: result.message();
-                    val errorMessage = try {
+                    try {
                         JSONObject(errorBody ?: "").getJSONObject("error").getString("message")
                     } catch (e: Exception) {
+                        Log.e("Exception", "$e")
                         "Something went wrong"
                     }
                     _state.update {

@@ -8,5 +8,6 @@ data class HomeScreenState(
     val search: String = "",
     val enableClearSearch: Boolean = false,
     val currentWeather: NetworkResponse<CurrentWeatherResponse> = NetworkResponse.Idle,
-    val searchResult: List<SearchResponse> = emptyList<SearchResponse>()
+    val searchResult: List<SearchResponse> = emptyList<SearchResponse>(),
+    val loggedOut: Boolean = false
 )

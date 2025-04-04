@@ -9,6 +9,6 @@ class ManualApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        appModule = ManualAppModuleImpl()
+        appModule = ManualAppModuleImpl(this)
     }
 }

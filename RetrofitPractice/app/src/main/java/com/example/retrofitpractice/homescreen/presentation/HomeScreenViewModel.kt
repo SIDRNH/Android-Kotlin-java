@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.retrofitpractice.homescreen.data.remote.model.CurrentWeatherResponse
 import com.example.retrofitpractice.homescreen.data.remote.model.SearchResponse
 import com.example.retrofitpractice.homescreen.domain.WeatherRepository
+import com.example.retrofitpractice.roomdb.UserRepository
 import com.example.retrofitpractice.utils.NetworkResponse
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,15 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Response
 
-class HomeScreenViewModel(private val weatherRepository: WeatherRepository, private val auth: FirebaseAuth): ViewModel() {
+class HomeScreenViewModel(
+    private val weatherRepository: WeatherRepository,
+    private val auth: FirebaseAuth,
+    private val userRepository: UserRepository
+): ViewModel() {
+
+    init {
+        fetchUser();
+    }
     private val _state = MutableStateFlow(HomeScreenState());
     val state: StateFlow<HomeScreenState> = _state.asStateFlow();
 
@@ -51,13 +60,21 @@ class HomeScreenViewModel(private val weatherRepository: WeatherRepository, priv
                     );
                 }
             }
-            HomeScreenEvent.signOut -> {
+            HomeScreenEvent.SignOutDialogBox -> {
+                _state.update {
+                    it.copy(
+                        signOutDialogBox = !_state.value.signOutDialogBox
+                    )
+                }
+            }
+            HomeScreenEvent.SignOut -> {
                 auth.signOut();
                 _state.update {
                     it.copy(
                         loggedOut = true
                     )
                 }
+                deleteAllUsers();
             }
         }
     }
@@ -148,6 +165,36 @@ class HomeScreenViewModel(private val weatherRepository: WeatherRepository, priv
                 }
                 Log.e("HomeScreenViewModel", "Exception occurred in Search API call: ${e.localizedMessage}", e);
             }
+        }
+    }
+
+    private fun fetchUser() {
+        viewModelScope.launch {
+            userRepository.fetchUser().collect { user ->
+                if (user != null) {
+                    _state.update {
+                        it.copy(
+                            userName = user.name ?: "Guest",
+                            userPhoneNumber = user.phoneNumber ?: "Not Available",
+                            userPicture = user.photoUrl ?: ""
+                        )
+                    }
+                }else {
+                    _state.update {
+                        it.copy(
+                            userName = "Guest",
+                            userPhoneNumber = "Not Available",
+                            userPicture = ""
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun deleteAllUsers() {
+        viewModelScope.launch {
+            userRepository.deleteAllUsers();
         }
     }
 }

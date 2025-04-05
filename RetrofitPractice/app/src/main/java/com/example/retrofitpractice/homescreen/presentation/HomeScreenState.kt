@@ -9,5 +9,9 @@ data class HomeScreenState(
     val enableClearSearch: Boolean = false,
     val currentWeather: NetworkResponse<CurrentWeatherResponse> = NetworkResponse.Idle,
     val searchResult: List<SearchResponse> = emptyList<SearchResponse>(),
-    val loggedOut: Boolean = false
+    val loggedOut: Boolean = false,
+    val userName: String? = "Guest",
+    val userPicture: String? = "Not Available",
+    val userPhoneNumber: String? = "",
+    val signOutDialogBox: Boolean = false
 )

@@ -2,8 +2,12 @@ package com.example.retrofitpractice.authentication.presentation
 
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.retrofitpractice.roomdb.User
+import com.example.retrofitpractice.roomdb.UserRepository
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
@@ -11,9 +15,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
-class AuthViewModel(private val auth: FirebaseAuth): ViewModel() {
+class AuthViewModel(
+    private val auth: FirebaseAuth,
+    private val userRepository: UserRepository
+): ViewModel() {
 
     private val _state = MutableStateFlow(AuthenticationState());
     val state: StateFlow<AuthenticationState> = _state.asStateFlow();
@@ -112,20 +120,40 @@ class AuthViewModel(private val auth: FirebaseAuth): ViewModel() {
 
     private fun signInWithPhoneNumber(auth: FirebaseAuth, credential: PhoneAuthCredential) {
         auth.signInWithCredential(credential).addOnSuccessListener {
+            val user: FirebaseUser? = auth.currentUser;
+            user?.let {
+                val userDetails = User(
+                    uid = it.uid,
+                    providerId = it.providerId,
+                    name = it.displayName,
+                    phoneNumber = it.phoneNumber,
+                    email = it.email,
+                    photoUrl = it.photoUrl?.toString(),
+                    isEmailVerified = it.isEmailVerified
+                );
+                upsertUser(user = userDetails);
+            }
+
             _state.update {
                 it.copy(
                     isLoading = false,
                     otp = "",
                     loggedIn = true
-                )
+                );
             }
         }.addOnFailureListener {
             _state.update {
                 it.copy(
                     isLoading = false,
                     otp = ""
-                )
+                );
             }
+        }
+    }
+
+    private fun upsertUser(user: User) {
+        viewModelScope.launch {
+            userRepository.upsertUser(user = user);
         }
     }
 }

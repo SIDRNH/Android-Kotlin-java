@@ -11,6 +11,9 @@ plugins {
 
     //Kotlin Serializable Plugin
     kotlin("plugin.serialization") version "2.0.21"
+
+    //KSP
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -98,6 +101,6 @@ dependencies {
 
     //Room DB
     implementation(libs.room.runtime)
-    implementation(libs.room.compiler)
+    ksp(libs.room.compiler)
     implementation(libs.room.ktx)
 }

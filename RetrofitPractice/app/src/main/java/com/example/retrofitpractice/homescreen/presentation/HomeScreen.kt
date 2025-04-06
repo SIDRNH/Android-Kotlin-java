@@ -23,9 +23,9 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
@@ -40,6 +40,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -87,6 +88,17 @@ fun HomeScreen(state: HomeScreenState, onEvent: (HomeScreenEvent) -> Unit, navCo
         drawerContent = {
             ModalDrawerSheet {
                 ProfileCard(name = state.userName, phoneNumber = state.userPhoneNumber, photoUrl = state.userPicture);
+                NavigationDrawerItem(
+                    label = { Text("Sign Out") },
+                    onClick = { onEvent(HomeScreenEvent.SignOutDialogBox) },
+                    selected = false,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            contentDescription = "Sign OUt"
+                        )
+                    }
+                )
             }
         },
         drawerState = drawerState
@@ -104,14 +116,6 @@ fun HomeScreen(state: HomeScreenState, onEvent: (HomeScreenEvent) -> Unit, navCo
                             },
                             content = {
                                 Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu");
-                            }
-                        )
-                    },
-                    actions = {
-                        IconButton(
-                            onClick = { onEvent(HomeScreenEvent.SignOutDialogBox) },
-                            content = {
-                                Icon(imageVector = Icons.Default.Lock, contentDescription = "Sign Out");
                             }
                         )
                     }
@@ -347,7 +351,7 @@ fun WeatherKeyVal(key : String, value : String) {
 @Composable
 fun ProfileCard(name: String?, phoneNumber: String?, photoUrl: String?) {
     Card(
-        modifier = Modifier.size(width = 240.dp, height = 88.dp),
+        modifier = Modifier.fillMaxWidth().height(88.dp),
         shape = RoundedCornerShape(4.dp)
     ) {
         Row(

@@ -26,6 +26,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.retrofitpractice.authentication.presentation.model.countries
 import com.example.retrofitpractice.navigation.HomeScreen
+import com.example.retrofitpractice.navigation.UserLogin
 
 @Composable
 fun UserAuthentication(state: AuthenticationState, onEvent: (AuthenticationEvent) -> Unit, navController: NavController) {
@@ -160,8 +162,12 @@ fun UserAuthentication(state: AuthenticationState, onEvent: (AuthenticationEvent
                 }
             }
         }
-        if (state.loggedIn) {
-            navController.navigate(HomeScreen)
+        LaunchedEffect(state.loggedIn) {
+            if (state.loggedIn) {
+                navController.navigate(HomeScreen) {
+                    popUpTo(UserLogin) { inclusive = true }
+                }
+            }
         }
     }
 }

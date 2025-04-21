@@ -59,6 +59,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    //Kotlinx serialization
+    implementation(libs.kotlinx.serialization.json)
     //Coil
     implementation(libs.coil)
     //Firebase

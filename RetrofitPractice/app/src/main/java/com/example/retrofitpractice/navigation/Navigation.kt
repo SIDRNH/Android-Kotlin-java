@@ -18,10 +18,12 @@ import com.example.retrofitpractice.di.manual.ManualApplication
 import com.example.retrofitpractice.homescreen.presentation.HomeScreen
 import com.example.retrofitpractice.homescreen.presentation.HomeScreenState
 import com.example.retrofitpractice.homescreen.presentation.HomeScreenViewModel
+import com.example.retrofitpractice.splashscreen.SplashScreen
 import com.example.retrofitpractice.ui.theme.RetrofitPracticeTheme
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import kotlinx.serialization.Serializable
+
+@Serializable
+object SplashScreen;
 
 @Serializable
 object UserLogin;
@@ -32,7 +34,6 @@ object HomeScreen;
 @Composable
 fun Navigation() {
     val navController: NavHostController = rememberNavController();
-    val user: FirebaseUser? = FirebaseAuth.getInstance().currentUser;
 
     RetrofitPracticeTheme {
         Scaffold(
@@ -41,8 +42,12 @@ fun Navigation() {
             NavHost(
                 navController = navController,
                 modifier = Modifier.padding(innerPadding),
-                startDestination = if (user == null) UserLogin else HomeScreen
+                startDestination = SplashScreen
             ) {
+                composable<SplashScreen> {
+                    SplashScreen(navController = navController);
+                }
+
                 composable<UserLogin> {
                     val authViewModel: AuthViewModel = viewModel<AuthViewModel>(
                         factory = ManualApplication.appModule.authViewModelFactory

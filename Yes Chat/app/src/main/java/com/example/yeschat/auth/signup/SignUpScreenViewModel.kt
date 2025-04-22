@@ -1,5 +1,6 @@
 package com.example.yeschat.auth.signup
 
+import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,18 +16,22 @@ class SignUpScreenViewModel: ViewModel() {
             is SignUpScreenEvent.Email -> {
                 _state.update {
                     it.copy(
-                        email = event.email
+                        email = event.email,
+                        validEmail = isValidEmail(event.email),
+                        emailTouched = true
                     )
                 }
             }
             is SignUpScreenEvent.Password -> {
                 _state.update {
                     it.copy(
-                        password = event.password
+                        password = event.password,
+                        validPassword = isValidPassword(event.password),
+                        passwordTouched = true
                     )
                 }
             }
-            SignUpScreenEvent.SignUp -> {
+            is SignUpScreenEvent.SignUp -> {
                 _state.update {
                     it.copy(
                         signUpButton = true
@@ -34,5 +39,13 @@ class SignUpScreenViewModel: ViewModel() {
                 }
             }
         }
+    }
+
+    fun isValidEmail(email: String): Boolean {
+        return email.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+    fun isValidPassword(password: String): Boolean {
+        val passwordValidator: Regex = Regex("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$")
+        return password.matches(passwordValidator)
     }
 }

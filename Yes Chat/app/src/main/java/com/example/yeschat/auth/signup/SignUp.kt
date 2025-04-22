@@ -66,7 +66,8 @@ fun SignUpScreen(navController: NavController, state: SignUpScreenState, onEvent
                     onNext = {
                         focusRequester.requestFocus();
                     }
-                )
+                ),
+                isError = !state.validEmail && state.emailTouched
             );
             Spacer(modifier = Modifier.height(8.dp));
             OutlinedTextField(
@@ -85,7 +86,8 @@ fun SignUpScreen(navController: NavController, state: SignUpScreenState, onEvent
                         focusManager.clearFocus();
                         onEvent(SignUpScreenEvent.SignUp);
                     }
-                )
+                ),
+                isError = !state.validPassword && state.passwordTouched
             );
             Spacer(modifier = Modifier.height(16.dp));
             Button(
@@ -93,7 +95,8 @@ fun SignUpScreen(navController: NavController, state: SignUpScreenState, onEvent
                 shape = RoundedCornerShape(3.dp),
                 content = {
                     Text(text = "Sign Up")
-                }
+                },
+                enabled = state.validEmail && state.validPassword
             );
             Spacer(modifier = Modifier.height(16.dp));
             TextButton(

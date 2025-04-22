@@ -96,7 +96,8 @@ fun LoginScreen(navController: NavController, state: LoginScreenState, onEvent: 
                 shape = RoundedCornerShape(3.dp),
                 content = {
                     Text(text = "Log in")
-                }
+                },
+                enabled = state.email.isNotEmpty() && state.password.isNotEmpty()
             );
             Spacer(modifier = Modifier.height(16.dp));
             TextButton(

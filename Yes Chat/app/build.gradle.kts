@@ -2,7 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    //Firebase Plugin
     id("com.google.gms.google-services")
+    //Kotlin Serializable Plugin
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 android {

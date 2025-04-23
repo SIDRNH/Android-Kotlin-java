@@ -1,8 +1,8 @@
 package com.example.yeschat.auth.login
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -45,7 +46,7 @@ fun LoginScreen(navController: NavController, state: LoginScreenState, onEvent: 
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(innerPadding).padding(16.dp).background(Color.White),
+            modifier = Modifier.fillMaxSize().padding(innerPadding).background(Color.White),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -91,24 +92,30 @@ fun LoginScreen(navController: NavController, state: LoginScreenState, onEvent: 
                 )
             );
             Spacer(modifier = Modifier.height(16.dp));
-            Button(
-                onClick = {onEvent(LoginScreenEvent.Login)},
-                shape = RoundedCornerShape(3.dp),
-                content = {
-                    Text(text = "Log in")
-                },
-                enabled = state.email.isNotEmpty() && state.password.isNotEmpty()
-            );
-            Spacer(modifier = Modifier.height(16.dp));
-            TextButton(
-                onClick = {
-                    navController.navigate(SignUp)
-                },
-                content = {
-                    Text(text = "Create an account?")
-                },
-                interactionSource = remember { MutableInteractionSource() },
-            )
+            Log.d("Loading", "${state.loading}")
+            if (state.loading) {
+                CircularProgressIndicator();
+            }else {
+                Button(
+                    onClick = {onEvent(LoginScreenEvent.Login)},
+                    shape = RoundedCornerShape(3.dp),
+                    content = {
+                        Text(text = "Log in")
+                    },
+                    enabled = state.email.isNotEmpty() && state.password.isNotEmpty()
+                );
+                Spacer(modifier = Modifier.height(16.dp));
+                TextButton(
+                    onClick = {
+                        navController.navigate(SignUp) {
+                            launchSingleTop = true
+                        }
+                    },
+                    content = {
+                        Text(text = "Create an account?")
+                    }
+                )
+            }
         }
     }
 }

@@ -13,10 +13,10 @@ class AppModuleImpl(private val appContext: Context): AppModule {
     }
     override val loginScreenViewModelFactory: ViewModelProvider.Factory
         get() = viewModelFactory {
-            LoginScreenViewModel()
+            LoginScreenViewModel();
         }
     override val signUpScreenViewModelFactory: ViewModelProvider.Factory
         get() = viewModelFactory {
-            SignUpScreenViewModel()
+            SignUpScreenViewModel();
         }
 }

@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.yeschat.HomeScreen
 import com.example.yeschat.Login
 import com.example.yeschat.R
 import com.google.firebase.auth.FirebaseAuth
@@ -36,7 +37,7 @@ fun SplashScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         if (user != null) {
             delay(1000);
-            navController.navigate(Login) {
+            navController.navigate(HomeScreen) {
                 popUpTo(0);
             }
         }

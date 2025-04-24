@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class LoginScreenViewModel: ViewModel() {
+class LoginScreenViewModel(private val firebaseAuth: FirebaseAuth): ViewModel() {
     private val _state: MutableStateFlow<LoginScreenState> = MutableStateFlow(LoginScreenState());
     val state: StateFlow<LoginScreenState> = _state.asStateFlow();
 
@@ -44,10 +44,11 @@ class LoginScreenViewModel: ViewModel() {
         viewModelScope.launch {
             _state.update {
                 it.copy(
-                    loading = true
+                    loading = true,
+                    error = null
                 )
             };
-            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+            firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
                     _state.update {
                         it.copy(

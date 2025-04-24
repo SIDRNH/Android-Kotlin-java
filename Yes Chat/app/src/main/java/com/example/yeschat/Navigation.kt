@@ -19,6 +19,8 @@ import com.example.yeschat.auth.signup.SignUpScreenState
 import com.example.yeschat.auth.signup.SignUpScreenViewModel
 import com.example.yeschat.di.Application
 import com.example.yeschat.home.HomeScreen
+import com.example.yeschat.home.HomeScreenState
+import com.example.yeschat.home.HomeScreenViewModel
 import com.example.yeschat.splashscreen.SplashScreen
 import kotlinx.serialization.Serializable
 
@@ -63,7 +65,11 @@ fun Navigation() {
             }
 
             composable<HomeScreen> {
-                HomeScreen(navController = navController);
+                val homeScreenViewModel: HomeScreenViewModel = viewModel<HomeScreenViewModel>(
+                    factory = Application.appModule.homeScreenViewModelFactory
+                )
+                val state: HomeScreenState by homeScreenViewModel.state.collectAsState()
+                HomeScreen(navController = navController, state = state, onEvent = homeScreenViewModel::onEvent);
             }
         }
     }

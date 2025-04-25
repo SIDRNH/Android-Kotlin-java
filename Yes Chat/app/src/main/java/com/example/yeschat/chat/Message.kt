@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ChatMessage(state: ChatScreenState, onEvent: (ChatScreenEvent) -> Unit) {
+fun ChatMessage(channelId: String, state: ChatScreenState, onEvent: (ChatScreenEvent) -> Unit) {
     val hideKeyboard: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current;
     Box(
         modifier = Modifier.fillMaxSize()
@@ -59,9 +59,9 @@ fun ChatMessage(state: ChatScreenState, onEvent: (ChatScreenEvent) -> Unit) {
                 )
             );
             IconButton(
-                onClick = {onEvent(ChatScreenEvent.SendMessage(channelId = ""))},
+                onClick = {onEvent(ChatScreenEvent.SendMessage(channelId = channelId))},
                 content = {
-                    Icon(imageVector = Icons.AutoMirrored.Default.Send, contentDescription = "Send Message")
+                    Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = "Send Message")
                 }
             )
         }
@@ -71,5 +71,5 @@ fun ChatMessage(state: ChatScreenState, onEvent: (ChatScreenEvent) -> Unit) {
 @Preview
 @Composable
 fun PreviewChatMessage() {
-    ChatMessage(ChatScreenState()) {};
+    ChatMessage("", ChatScreenState()) {};
 }

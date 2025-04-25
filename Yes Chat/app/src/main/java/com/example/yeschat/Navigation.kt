@@ -17,6 +17,9 @@ import com.example.yeschat.auth.login.LoginScreenViewModel
 import com.example.yeschat.auth.signup.SignUpScreen
 import com.example.yeschat.auth.signup.SignUpScreenState
 import com.example.yeschat.auth.signup.SignUpScreenViewModel
+import com.example.yeschat.chat.ChatScreen
+import com.example.yeschat.chat.ChatScreenState
+import com.example.yeschat.chat.ChatScreenViewModel
 import com.example.yeschat.di.Application
 import com.example.yeschat.home.HomeScreen
 import com.example.yeschat.home.HomeScreenState
@@ -35,6 +38,9 @@ object SignUp;
 
 @Serializable
 object HomeScreen;
+
+@Serializable
+data class ChatScreen(val channelId: String);
 
 @Composable
 fun Navigation() {
@@ -70,6 +76,15 @@ fun Navigation() {
                 )
                 val state: HomeScreenState by homeScreenViewModel.state.collectAsState()
                 HomeScreen(navController = navController, state = state, onEvent = homeScreenViewModel::onEvent);
+            }
+
+            composable<ChatScreen> { backStackEntry ->
+                val channelId: String = backStackEntry.arguments?.getString("channelId") ?: "";
+                val chatScreenViewModel: ChatScreenViewModel = viewModel<ChatScreenViewModel>(
+                    factory = Application.appModule.chatScreenViewModelFactory
+                );
+                val state: ChatScreenState by chatScreenViewModel.state.collectAsState();
+                ChatScreen(navController = navController, channelId = channelId, state = state, onEvent = chatScreenViewModel::onEvent);
             }
         }
     }

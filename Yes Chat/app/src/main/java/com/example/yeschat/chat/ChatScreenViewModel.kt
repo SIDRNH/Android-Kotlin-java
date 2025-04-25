@@ -3,6 +3,7 @@ package com.example.yeschat.chat
 import androidx.lifecycle.ViewModel
 import com.example.yeschat.model.Message
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -18,10 +19,6 @@ class ChatScreenViewModel(private val firebaseDatabase: FirebaseDatabase): ViewM
     private val _state: MutableStateFlow<ChatScreenState> = MutableStateFlow(ChatScreenState());
     val state: StateFlow<ChatScreenState> = _state.asStateFlow();
 
-    init {
-
-    }
-
     fun onEvent(event: ChatScreenEvent) {
         when(event) {
             is ChatScreenEvent.ListenMessages -> listenMessages(event.chanelId);
@@ -34,7 +31,7 @@ class ChatScreenViewModel(private val firebaseDatabase: FirebaseDatabase): ViewM
 
     private fun sendMessage(channelId: String) {
 
-        val user = Firebase.auth.currentUser;
+        val user: FirebaseUser? = Firebase.auth.currentUser;
         if (user == null) {
             _state.update { it.copy(error = "Please Login to Send Message") };
             return;
@@ -49,9 +46,8 @@ class ChatScreenViewModel(private val firebaseDatabase: FirebaseDatabase): ViewM
             imageUrl = null
         );
         _state.update { it.copy(loading = true, error = null) };
-        firebaseDatabase.getReference("messages")
+        firebaseDatabase.reference.child("messages")
             .child(channelId)
-            .child(message.id)
             .push()
             .setValue(message)
             .addOnSuccessListener {

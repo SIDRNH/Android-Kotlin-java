@@ -1,9 +1,7 @@
 package com.example.yeschat.chat
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,17 +19,15 @@ import com.google.firebase.auth.auth
 fun ChatBubble(text: Message) {
     val isCurrentUser: Boolean = text.senderId == Firebase.auth.currentUser?.uid
     val bubbleColor: Color = if (isCurrentUser) Color.Blue else Color.Green
-    Row(
+    Box(
         modifier = Modifier.fillMaxSize()
-            .padding(vertical = 4.dp, horizontal = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.Bottom
+            .padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
-        val alignment: Alignment = if (isCurrentUser) Alignment.CenterStart else Alignment.CenterEnd
+        val alignment: Alignment = if (isCurrentUser) Alignment.CenterEnd else Alignment.CenterStart
         Box(
             modifier = Modifier.padding(8.dp)
-                .background(color = bubbleColor, shape = RoundedCornerShape(8.dp)),
-            contentAlignment = alignment
+                .background(color = bubbleColor, shape = RoundedCornerShape(8.dp))
+                .align(alignment),
         ) {
             Text(
                 text = text.message,

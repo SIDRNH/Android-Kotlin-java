@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.yeschat.ChatScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,7 +54,9 @@ fun HomeScreen(navController: NavController, state: HomeScreenState, onEvent: (H
                             .padding(8.dp)
                             .clip(RoundedCornerShape(16.dp))
                             .background(Color.Red.copy(alpha = 0.3f))
-                            .clickable {}
+                            .clickable {
+                                navController.navigate(ChatScreen(channelId = channel.id))
+                            }
                             .padding(16.dp),
                         text = channel.name
                     )

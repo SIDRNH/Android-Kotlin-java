@@ -1,5 +1,6 @@
 package com.example.yeschat.chat
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,17 +16,22 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.yeschat.R
+import com.example.yeschat.ui.theme.darkGrey
 
 @Composable
 fun ChatMessage(channelId: String, state: ChatScreenState, onEvent: (ChatScreenEvent) -> Unit) {
@@ -41,29 +47,41 @@ fun ChatMessage(channelId: String, state: ChatScreenState, onEvent: (ChatScreenE
         Row(
             modifier = Modifier.fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(8.dp)
-                .background(color = Color.LightGray),
+                .background(color = darkGrey)
+                .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
+            IconButton(
+                onClick = {},
+                content = {
+                    Image(painter = painterResource(R.drawable.attach), contentDescription = "Attach Image or File")
+                }
+            );
             TextField(
                 value = state.message,
                 onValueChange = {onEvent(ChatScreenEvent.TextMessage(it))},
                 modifier = Modifier.weight(1f),
-                placeholder = { Text(text = "Type a Message") },
+                placeholder = { Text(text = "Type a Message", color = Color.White) },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done
                 ),
                 keyboardActions = KeyboardActions(
                     onDone = { hideKeyboard?.hide() }
+                ),
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = darkGrey,
+                    focusedContainerColor = darkGrey,
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White
                 )
             );
             IconButton(
                 onClick = {onEvent(ChatScreenEvent.SendMessage(channelId = channelId))},
                 content = {
-                    Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = "Send Message")
+                    Image(painter = painterResource(R.drawable.send), contentDescription = "Send Message")
                 }
-            )
+            );
         }
     }
 }

@@ -7,6 +7,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 
 @Composable
@@ -14,7 +15,9 @@ fun ChatScreen(navController: NavController, channelId: String, state: ChatScree
     LaunchedEffect(true) {
         onEvent(ChatScreenEvent.ListenMessages(channelId))
     }
-    Scaffold {
+    Scaffold(
+        containerColor = Color.Black
+    ) {
         innerPadding ->
         Column(
             modifier = Modifier.fillMaxSize().padding(innerPadding)

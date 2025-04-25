@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.yeschat.ui.theme.darkGrey
 
 @Composable
 fun ChannelItem(channelName: String, onClick: () -> Unit) {
@@ -24,7 +25,7 @@ fun ChannelItem(channelName: String, onClick: () -> Unit) {
         modifier = Modifier.fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 2.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.Gray)
+            .background(darkGrey)
             .clickable{
                 onClick();
             },

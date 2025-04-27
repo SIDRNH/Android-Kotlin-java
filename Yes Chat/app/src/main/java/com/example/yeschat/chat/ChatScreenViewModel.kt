@@ -1,5 +1,7 @@
 package com.example.yeschat.chat
 
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.yeschat.model.Message
 import com.google.firebase.Firebase
@@ -13,6 +15,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.UUID
 
 class ChatScreenViewModel(private val firebaseDatabase: FirebaseDatabase): ViewModel() {
@@ -23,8 +28,49 @@ class ChatScreenViewModel(private val firebaseDatabase: FirebaseDatabase): ViewM
         when(event) {
             is ChatScreenEvent.ListenMessages -> listenMessages(event.chanelId);
             is ChatScreenEvent.TextMessage -> _state.update { it.copy(message = event.textMessage) };
-            is ChatScreenEvent.SendMessage -> {
-                sendMessage(channelId = event.channelId);
+            is ChatScreenEvent.SendMessage -> { sendMessage(channelId = event.channelId) };
+            ChatScreenEvent.AttachFile -> _state.update { it.copy(isDialogOpen = true) };
+            is ChatScreenEvent.CameraPermission -> cameraPermission(isGranted = event.isGranted);
+            is ChatScreenEvent.ImageCaptured -> imageCaptured(uri = event.uri);
+        }
+    }
+
+    private fun cameraPermission(isGranted: Boolean) {
+        Log.d("isGranted", "$isGranted")
+        if (isGranted) {
+            _state.update {
+                it.copy(
+                    requestCameraPermission = false,
+                    launchCamera = true,
+                    isDialogOpen = false
+                )
+            }
+        }else {
+            _state.update {
+                it.copy(
+                    requestCameraPermission = true,
+                    isDialogOpen = false,
+                    error = "Please Provide Camera Permission"
+                )
+            }
+        }
+    }
+
+    private fun imageCaptured(uri: Uri?) {
+        if (uri != null) {
+            _state.update {
+                it.copy(
+                    cameraImageUri = uri,
+                    launchCamera = false
+                )
+            }
+            //Handle to Send Images to server
+        }else {
+            _state.update {
+                it.copy(
+                    launchCamera = false,
+                    error = "Image Capture Failed"
+                )
             }
         }
     }

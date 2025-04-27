@@ -53,7 +53,7 @@ fun ChatMessage(channelId: String, state: ChatScreenState, onEvent: (ChatScreenE
             verticalAlignment = Alignment.Bottom
         ) {
             IconButton(
-                onClick = {},
+                onClick = {onEvent(ChatScreenEvent.AttachFile)},
                 content = {
                     Image(painter = painterResource(R.drawable.attach), contentDescription = "Attach Image or File")
                 }

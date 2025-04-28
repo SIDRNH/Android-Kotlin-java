@@ -12,11 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.navigation.NavController
 import java.io.File
@@ -27,17 +24,15 @@ import java.util.Locale
 @Composable
 fun ChatScreen(navController: NavController, channelId: String, state: ChatScreenState, onEvent: (ChatScreenEvent) -> Unit) {
 
-    val cameraImageUri = remember { mutableStateOf<Uri?>(null) };
     fun createImageUri(): Uri {
-        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val storageDir = ContextCompat.getExternalFilesDirs(
-            navController.context, Environment.DIRECTORY_PICTURES
-        ).first()
-        return FileProvider.getUriForFile(navController.context,
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date());
+        val storageDir = navController.context.getExternalFilesDirs(Environment.DIRECTORY_PICTURES);
+        val photoFile = File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir[0]);
+        return FileProvider.getUriForFile(
+            navController.context,
             "${navController.context.packageName}.provider",
-            File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir).apply {
-                cameraImageUri.value = Uri.fromFile(this)
-            })
+            photoFile
+        )
     }
     val cameraImageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
